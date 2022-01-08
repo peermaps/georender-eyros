@@ -14,5 +14,6 @@
     "random-access-file": "^2.2.0",
     "split2": "^4.1.0",
     "through2": "^4.0.2"
-  }
+  },
+  "license": "bsd"
 }

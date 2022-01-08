@@ -5,9 +5,12 @@ var argv = minimist(process.argv.slice(2), {
   alias: {
     d: 'datadir',
     f: 'format',
+    h: 'help',
   },
   default: { datadir: '.' },
 })
+if (argv.help) return usage()
+
 var fs = require('fs')
 var path = require('path')
 var varint = require('varint')
@@ -17,7 +20,7 @@ var pump = require('pump')
 var pumpify = require('pumpify')
 
 var fmt = null
-if (argv.format) {
+if (argv.format === 'hex' || argv.format === 'base64') {
   fmt = pumpify(split(), through(function (buf, enc, next) {
     next(null, Buffer.from(buf.toString(), argv.format))
   }))
@@ -122,4 +125,17 @@ function getPoint(buf) {
     return point
   }
   return null
+}
+
+function usage() {
+  console.log(`
+    usage: georender-eyros [FILE] {OPTIONS}
+
+    Write georender data from stdin or FILE into an eyros database.
+
+      -f --format   Input georender format: hex, base64, or lp (default)
+      -d --datadir  Write to eyros database in this directory.
+      -h --help     Show this message.
+
+  `.trim().replace(/^ {4}/gm,'') + '\n')
 }
