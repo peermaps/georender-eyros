@@ -73,13 +73,15 @@ fs.mkdirSync(argv.datadir, { recursive: true })
   })
   var count = 0
   var ingest = through.obj(write, end)
-  pump(process.stdin, fmt, bstream, ingest)
+  pump(process.stdin, fmt, bstream, ingest, function done (error) {
+    if (error) throw error
+  })
   function write(batch, enc, next) {
     count += batch.length
     db.batch(batch).then(() => {
       if (count > syncSize) {
         count = 0
-        db.sync().then(() => next).catch(next)
+        db.sync().then(next).catch(next)
       } else next()
     }).catch(next)
   }
