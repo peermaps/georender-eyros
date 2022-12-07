@@ -79,7 +79,7 @@ fs.mkdirSync(argv.datadir, { recursive: true })
     db.batch(batch).then(() => {
       if (count > syncSize) {
         count = 0
-        db.sync().then(() => next).catch(next)
+        db.sync().then(next).catch(next)
       } else next()
     }).catch(next)
   }
